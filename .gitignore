@@ -2,6 +2,15 @@
 __pycache__/
 *.py[codz]
 *$py.class
+*.avi
+*.npz
+*.zip
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.txt
 
 # C extensions
 *.so
