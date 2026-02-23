@@ -124,6 +124,13 @@ def train_and_evaluate(dataset_path, output_name):
     plt.xticks(tick_marks, train_dataset.classes, rotation=45)
     plt.yticks(tick_marks, train_dataset.classes)
     
+    # Add text annotations with counts
+    for i in range(num_classes):
+        for j in range(num_classes):
+            plt.text(j, i, str(cm[i, j]), ha='center', va='center', 
+                    color='white' if cm[i, j] > cm.max() / 2 else 'black',
+                    fontsize=10, fontweight='bold')
+    
     plt.xlabel('Predicted Label')
     plt.ylabel('True Label')
     plt.tight_layout()
@@ -132,6 +139,6 @@ def train_and_evaluate(dataset_path, output_name):
     print(f"Confusion matrix saved as Confusion_matrix_{output_name}.png")
     
 if __name__ == "__main__":
-    dataset_path = 'OysterShell'  # Update this path to your dataset location
-    output_name = 'OysterShell_ResNet18_v5'
+    dataset_path = '8FishSpecies'  # Update this path to your dataset location
+    output_name = f'{dataset_path}_ResNet18_v5'
     train_and_evaluate(dataset_path, output_name)
