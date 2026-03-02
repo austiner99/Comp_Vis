@@ -127,6 +127,9 @@ def stereo_calibrate(left_folder, right_folder, K1, dist1, K2, dist2, file):
         criteria=(cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001),
         flags=cv.CALIB_FIX_INTRINSIC
     )
+
+    #save data to npz file
+    np.savez(f'{file}_stereo_calibration.npz', K1=K1, K2=K2, dist1=dist1, dist2=dist2, R=R, T=T, E=E, F=F)
     
     print(f"Rotation matrix (R):\n{R}")
     print(f"Translation vector (T):\n{T}")
