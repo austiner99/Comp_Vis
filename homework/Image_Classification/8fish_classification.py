@@ -127,9 +127,10 @@ def train_and_evaluate(dataset_path, output_name):
     # Add text annotations with counts
     for i in range(num_classes):
         for j in range(num_classes):
-            plt.text(j, i, str(cm[i, j]), ha='center', va='center', 
-                    color='white' if cm[i, j] > cm.max() / 2 else 'black',
-                    fontsize=10, fontweight='bold')
+            if cm[i, j] > 0:  # Only annotate non-zero counts
+                plt.text(j, i, str(cm[i, j]), ha='center', va='center', 
+                        color='white' if cm[i, j] > cm.max() / 2 else 'black',
+                        fontsize=10, fontweight='bold')
     
     plt.xlabel('Predicted Label')
     plt.ylabel('True Label')
