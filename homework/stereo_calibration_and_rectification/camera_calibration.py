@@ -37,6 +37,7 @@ def calibrate_camera(image_folder, file):
     
     objpoints = []
     imgpoints = []
+    good_images = 0
     
     if file == 'Practice':
         images = glob.glob(os.path.join(image_folder, '*.bmp'))
@@ -50,6 +51,7 @@ def calibrate_camera(image_folder, file):
         ret, corners = cv.findChessboardCorners(gray, (cols, rows), None)
         
         if ret:
+            good_images += 1
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), 
                                         criteria=(cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001))
@@ -59,6 +61,7 @@ def calibrate_camera(image_folder, file):
     
     print(f"Camera matrix (K) for {image_folder}:\n{K}")
     print(f"Distortion coefficients (dist) for {image_folder}:\n{dist}")
+    print(f"Number of good images used for calibration in {image_folder}: {good_images}/{len(images)}")
     
     return K, dist, gray.shape[::-1]
 
@@ -78,6 +81,8 @@ def stereo_calibrate(left_folder, right_folder, K1, dist1, K2, dist2, file):
     objpoints = []
     imgpoints_left = []
     imgpoints_right = []
+    good_images_left = 0
+    good_images_right = 0
     
     if file == 'Practice':
         left_images = glob.glob(os.path.join(left_folder, '*.bmp'))
@@ -95,6 +100,11 @@ def stereo_calibrate(left_folder, right_folder, K1, dist1, K2, dist2, file):
         
         ret_left, corners_left = cv.findChessboardCorners(gray_left, (cols, rows), None)
         ret_right, corners_right = cv.findChessboardCorners(gray_right, (cols, rows), None)
+        
+        if ret_left:
+            good_images_left += 1
+        if ret_right:
+            good_images_right += 1
         
         if ret_left and ret_right:
             objpoints.append(objp)
@@ -122,6 +132,9 @@ def stereo_calibrate(left_folder, right_folder, K1, dist1, K2, dist2, file):
     print(f"Translation vector (T):\n{T}")
     print(f"Essential matrix (E):\n{E}")
     print(f"Fundamental matrix (F):\n{F}")
+    print(f"Number of good stereo pairs used for calibration: {len(objpoints)}")
+    print(f"Number of good left images: {good_images_left}/{len(left_images)}")
+    print(f"Number of good right images: {good_images_right}/{len(right_images)}")
     
     #convert R to rotation Vector (degrees)
     rvec, _ = cv.Rodrigues(R)
