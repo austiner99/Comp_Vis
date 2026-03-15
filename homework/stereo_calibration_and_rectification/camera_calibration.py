@@ -26,10 +26,10 @@ def calibrate_camera(image_folder, file):
     
     if file == 'Practice':
         square_size = 2.0 # inches
-    elif file == 'Pics':
+    elif file == 'pics':
         square_size = 3.985 #inches
     else:
-        raise ValueError("Invalid file name. Use 'Practice' or 'Pics'.")
+        raise ValueError("Invalid file name. Use 'Practice' or 'pics'.")
 
     objp = np.zeros((rows*cols, 3), np.float32)
     objp[:, :2] = np.mgrid[0:cols, 0:rows].T.reshape(-1, 2)
@@ -41,8 +41,10 @@ def calibrate_camera(image_folder, file):
     
     if file == 'Practice':
         images = glob.glob(os.path.join(image_folder, '*.bmp'))
-    elif file == 'Pics':
+    elif file == 'pics':
         images = glob.glob(os.path.join(image_folder, '*.png'))
+    
+    print(f"Calibrating camera for {image_folder} with {len(images)} images...")
     
     for fname in images:
         img = cv.imread(fname)
@@ -70,10 +72,10 @@ def calibrate_camera(image_folder, file):
 def stereo_calibrate(left_folder, right_folder, K1, dist1, K2, dist2, file):
     if file == 'Practice':
         square_size = 1.0 # inches
-    elif file == 'Pics':
+    elif file == 'pics':
         square_size = 3.985 #inches
     else:
-        raise ValueError("Invalid file name. Use 'Practice' or 'Pics'.")
+        raise ValueError("Invalid file name. Use 'Practice' or 'pics'.")
 
     objp = np.zeros((rows*cols, 3), np.float32)
     objp[:, :2] = np.mgrid[0:cols, 0:rows].T.reshape(-1, 2)
@@ -87,7 +89,7 @@ def stereo_calibrate(left_folder, right_folder, K1, dist1, K2, dist2, file):
     if file == 'Practice':
         left_images = glob.glob(os.path.join(left_folder, '*.bmp'))
         right_images = glob.glob(os.path.join(right_folder, '*.bmp'))
-    elif file == 'Pics':
+    elif file == 'pics':
         left_images = glob.glob(os.path.join(left_folder, '*.png'))
         right_images = glob.glob(os.path.join(right_folder, '*.png'))
     
@@ -244,9 +246,9 @@ def rectify_images(img_left, img_right, K1, dist1, K2, dist2, R, T, image_size):
     return rectified_left, rectified_right, diff_image_left, diff_image_right
 
 if __name__ == "__main__":
-    main_file_name = input("Enter the main file name (Practice or Pics): ")
-    if main_file_name not in ['Practice', 'Pics']:
-        raise ValueError("Invalid file name. Use 'Practice' or 'Pics'.")
+    main_file_name = input("Enter the main file name (Practice or pics): ")
+    if main_file_name not in ['Practice', 'pics']:
+        raise ValueError("Invalid file name. Use 'Practice' or 'pics'.")
     left_folder = f'{main_file_name}/Left/L'
     right_folder = f'{main_file_name}/Right/R'
     both_left_folder = f'{main_file_name}/Both/L'
