@@ -15,10 +15,10 @@ def get_projection_matrices(K1, K2, R, T):
     P2 = K2 @ np.hstack((R, T))
     return P1, P2
 
-def get_projection_matrices_camera_2(K1, K2, R, T):
-    P1 = K1 @ np.hstack((R.T, -R.T @ T))
-    P2 = K2 @ np.hstack((np.eye(3), np.zeros((3, 1))))
-    return P1, P2
+# def get_projection_matrices_camera_2(K1, K2, R, T):
+#     P1 = K1 @ np.hstack((R.T, -R.T @ T))
+#     P2 = K2 @ np.hstack((np.eye(3), np.zeros((3, 1))))
+#     return P1, P2
 
 def triangulate_points(P1, P2, points1, points2):
     # Triangulate the 3D points from the corresponding 2D points in the two images
@@ -29,14 +29,14 @@ def triangulate_points(P1, P2, points1, points2):
     points_3d = points4D[:3] / points4D[3]
     return points_3d.T
 
-def verify_Pl_is_R_Pr_plus_T(points_1, points_2, R, T):
-    # Verify that the 3D points satisfy the relationship Pl = R * Pr + T
-    for i in range(points_1.shape[0]):
-        Pl = points_1[i]
-        Pr = points_2[i]
-        Pl_estimated = R @ Pr + T.flatten()
-        error = np.linalg.norm(Pl - Pl_estimated)
-        print(f"Point {i+1}: Pl = {np.round(Pl, 2)}, R*Pr + T = {np.round(Pl_estimated, 2)}, Error = {np.round(error, 2)}")
+# def verify_Pl_is_R_Pr_plus_T(points_1, points_2, R, T):
+#     # Verify that the 3D points satisfy the relationship Pl = R * Pr + T
+#     for i in range(points_1.shape[0]):
+#         Pl = points_1[i]
+#         Pr = points_2[i]
+#         Pl_estimated = R @ Pr + T.flatten()
+#         error = np.linalg.norm(Pl - Pl_estimated)
+#         print(f"Point {i+1}: Pl = {np.round(Pl, 2)}, R*Pr + T = {np.round(Pl_estimated, 2)}, Error = {np.round(error, 2)}")
 
 def show_baseball_with_markers(img, points):
     for point in points:
@@ -44,31 +44,31 @@ def show_baseball_with_markers(img, points):
         cv.circle(img, (x, y), 5, (0, 255, 0), -1)
     return img
 
-def prove_rectified_translation(points_rectified, T):
+# def prove_rectified_translation(points_rectified, T):
 
-    print("\n===== Proving PL = PR + [||T||, 0, 0]^T =====\n")
+#     print("\n===== Proving PL = PR + [||T||, 0, 0]^T =====\n")
 
-    baseline = np.linalg.norm(T)
+#     baseline = np.linalg.norm(T)
 
-    for i, PL in enumerate(points_rectified):
+#     for i, PL in enumerate(points_rectified):
 
-        PR = PL.copy()
-        PR[0] -= baseline
+#         PR = PL.copy()
+#         PR[0] -= baseline
 
-        reconstructed_PL = PR + np.array([baseline, 0, 0])
+#         reconstructed_PL = PR + np.array([baseline, 0, 0])
 
-        error = np.linalg.norm(PL - reconstructed_PL)
+#         error = np.linalg.norm(PL - reconstructed_PL)
 
-        print(f"Corner {i+1}:")
-        print("PL =", PL)
-        print("PR =", PR)
-        print("Reconstruction error =", error)
-        print()
+#         print(f"Corner {i+1}:")
+#         print("PL =", PL)
+#         print("PR =", PR)
+#         print("Reconstruction error =", error)
+#         print()
 
-    # Distance check between two chessboard corners
-    dist = np.linalg.norm(points_rectified[0] - points_rectified[1])
+#     # Distance check between two chessboard corners
+#     dist = np.linalg.norm(points_rectified[0] - points_rectified[1])
 
-    print("Distance between two top corners:", dist)
+#     print("Distance between two top corners:", dist)
 
 def task1(K1, dist1, K2, dist2, R, T, left_img_path, right_img_path, chessboard_size=(7,10)):
     
@@ -153,80 +153,80 @@ def task1(K1, dist1, K2, dist2, R, T, left_img_path, right_img_path, chessboard_
     cv.waitKey(0)
     cv.destroyAllWindows()
 
-def task2(K1, dist1, K2, dist2, R, T, left_img_path, right_img_path, board_size = (7,10)):
-    print("\nTask 2: Perspective Transorm")
-    image_left = cv.imread(left_img_path)
-    image_right = cv.imread(right_img_path)
-    gray_left = cv.cvtColor(image_left, cv.COLOR_BGR2GRAY)
-    gray_right = cv.cvtColor(image_right, cv.COLOR_BGR2GRAY)
-    ret_left, corners_left = cv.findChessboardCorners(gray_left, board_size)
-    ret_right, corners_right = cv.findChessboardCorners(gray_right, board_size)
-    if not ret_left or not ret_right:
-        print("Chessboard corners not found in one of the images.")
-        return
-    criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+# def task2(K1, dist1, K2, dist2, R, T, left_img_path, right_img_path, board_size = (7,10)):
+#     print("\nTask 2: Perspective Transorm")
+#     image_left = cv.imread(left_img_path)
+#     image_right = cv.imread(right_img_path)
+#     gray_left = cv.cvtColor(image_left, cv.COLOR_BGR2GRAY)
+#     gray_right = cv.cvtColor(image_right, cv.COLOR_BGR2GRAY)
+#     ret_left, corners_left = cv.findChessboardCorners(gray_left, board_size)
+#     ret_right, corners_right = cv.findChessboardCorners(gray_right, board_size)
+#     if not ret_left or not ret_right:
+#         print("Chessboard corners not found in one of the images.")
+#         return
+#     criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     
-    corners_left = cv.cornerSubPix(gray_left, corners_left, (11, 11), (-1, -1), criteria)
-    corners_right = cv.cornerSubPix(gray_right, corners_right, (11, 11), (-1, -1), criteria)
+#     corners_left = cv.cornerSubPix(gray_left, corners_left, (11, 11), (-1, -1), criteria)
+#     corners_right = cv.cornerSubPix(gray_right, corners_right, (11, 11), (-1, -1), criteria)
     
-    cols = board_size[0]
-    rows = board_size[1]
-    points_left = np.array([
-        corners_left[0], 
-        corners_left[cols-1], 
-        corners_left[-cols], 
-        corners_left[-1]]).reshape(-1, 2)
-    points_right = np.array([
-        corners_right[0], 
-        corners_right[cols-1], 
-        corners_right[-cols], 
-        corners_right[-1]]).reshape(-1, 2)
+#     cols = board_size[0]
+#     rows = board_size[1]
+#     points_left = np.array([
+#         corners_left[0], 
+#         corners_left[cols-1], 
+#         corners_left[-cols], 
+#         corners_left[-1]]).reshape(-1, 2)
+#     points_right = np.array([
+#         corners_right[0], 
+#         corners_right[cols-1], 
+#         corners_right[-cols], 
+#         corners_right[-1]]).reshape(-1, 2)
     
-    image_size = gray_left.shape[::-1]
+#     image_size = gray_left.shape[::-1]
 
-    # Stereo rectification
-    R1, R2, P1_rect, P2_rect, Q, _, _ = cv.stereoRectify(
-        K1, dist1, K2, dist2,
-        image_size, R, T,
-        flags=cv.CALIB_ZERO_DISPARITY
-    )
+#     # Stereo rectification
+#     R1, R2, P1_rect, P2_rect, Q, _, _ = cv.stereoRectify(
+#         K1, dist1, K2, dist2,
+#         image_size, R, T,
+#         flags=cv.CALIB_ZERO_DISPARITY
+#     )
 
-    # Undistort + Rectify points
-    ptsL_rect = cv.undistortPoints(
-        points_left.reshape(-1,1,2),
-        K1, dist1,
-        R=R1,
-        P=P1_rect
-    )
+#     # Undistort + Rectify points
+#     ptsL_rect = cv.undistortPoints(
+#         points_left.reshape(-1,1,2),
+#         K1, dist1,
+#         R=R1,
+#         P=P1_rect
+#     )
 
-    ptsR_rect = cv.undistortPoints(
-        points_right.reshape(-1,1,2),
-        K2, dist2,
-        R=R2,
-        P=P2_rect
-    )
+#     ptsR_rect = cv.undistortPoints(
+#         points_right.reshape(-1,1,2),
+#         K2, dist2,
+#         R=R2,
+#         P=P2_rect
+#     )
 
-    ptsL_rect = ptsL_rect.reshape(-1,2)
-    ptsR_rect = ptsR_rect.reshape(-1,2)
+#     ptsL_rect = ptsL_rect.reshape(-1,2)
+#     ptsR_rect = ptsR_rect.reshape(-1,2)
 
-    # Compute disparity
-    disparity = ptsL_rect[:,0] - ptsR_rect[:,0]
+#     # Compute disparity
+#     disparity = ptsL_rect[:,0] - ptsR_rect[:,0]
 
-    # Form (x,y,d) triplets
-    points_3D_input = np.zeros((4,1,3), dtype=np.float32)
-    points_3D_input[:,0,0] = ptsL_rect[:,0]
-    points_3D_input[:,0,1] = ptsL_rect[:,1]
-    points_3D_input[:,0,2] = disparity
+#     # Form (x,y,d) triplets
+#     points_3D_input = np.zeros((4,1,3), dtype=np.float32)
+#     points_3D_input[:,0,0] = ptsL_rect[:,0]
+#     points_3D_input[:,0,1] = ptsL_rect[:,1]
+#     points_3D_input[:,0,2] = disparity
 
-    # Apply perspective transform
-    points_3D_rect = cv.perspectiveTransform(points_3D_input, Q)
+#     # Apply perspective transform
+#     points_3D_rect = cv.perspectiveTransform(points_3D_input, Q)
 
-    points_3D_rect = points_3D_rect.reshape(-1,3)
+#     points_3D_rect = points_3D_rect.reshape(-1,3)
 
-    print("3D Points in Rectified Frame:")
-    print(points_3D_rect)
+#     print("3D Points in Rectified Frame:")
+#     print(points_3D_rect)
 
-    return points_3D_rect    
+#     return points_3D_rect    
 
 def detect_ball(frame, prev_frame, prev_points, roi=None, debug=False):
     gray_prev = cv.cvtColor(prev_frame, cv.COLOR_BGR2GRAY)
@@ -242,7 +242,7 @@ def detect_ball(frame, prev_frame, prev_points, roi=None, debug=False):
     contours, _ = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     best_candidate = None
     best_score = 0
-    max_change = 225  # Maximum allowed change in position between frames
+    max_change = 175  # Maximum allowed change in position between frames
     area_counter = 0
     perimeter_counter = 0
     change_counter = 0
@@ -346,7 +346,7 @@ def visualize_trajectory(trajectory):
     Y = trajectory[:, 1]
     Z = trajectory[:, 2]
 
-    X_fit = np.polyfit(Z, X, 2)
+    X_fit = np.polyfit(Z, X, 1)
     Y_fit = np.polyfit(Z, Y, 2)
 
     Z_line = np.linspace(Z.min(), Z.max(), 250)
@@ -412,13 +412,13 @@ def visualize_trajectory(trajectory):
 
 if __name__ == "__main__":
 
-    K1, dist1, K2, dist2, R, T = load_calibration_data('Pics_stereo_calibration.npz')
+    K1, dist1, K2, dist2, R, T = load_calibration_data('pics_stereo_calibration.npz')
     dist1 = dist1.reshape(-1,1)
     dist2 = dist2.reshape(-1,1)
 
-    task1(K1, dist1, K2, dist2, R, T, 'Pics/Both/L/30.png', 'Pics/Both/R/30.png')
-    points_3d = task2(K1, dist1, K2, dist2, R, T, 'Pics/Both/L/30.png', 'Pics/Both/R/30.png')
-    prove_rectified_translation(points_3d, T)
+    # task1(K1, dist1, K2, dist2, R, T, 'pics/Both/L/30.png', 'pics/Both/R/30.png')
+    # points_3d = task2(K1, dist1, K2, dist2, R, T, 'pics/Both/L/30.png', 'pics/Both/R/30.png')
+    # prove_rectified_translation(points_3d, T)
 
     trajectory = process_baseball_sequence(K1, K2, dist1, dist2, R, T, 'Baseball/L', 'Baseball/R')
     visualize_trajectory(trajectory)
